@@ -1,17 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-  </head>
-  <body>
-    <%- include("../partials/navbar.ejs") %>
+  <%- include('../partials/head.ejs', { title: "All Fruits"}) %>
 
-    <h1>All Fruits</h1>
+  <body>
+    <%- include('../partials/navbar.ejs') %>
+    <div class="index-header-div">
+      <h1>All Fruits</h1>
+      <a class="add-fruit" href="/fruits/new">Add a fruit</a>
+    </div>
+    <% if(allFruits.length === 0) { %>
+    <p>
+      No fruits available. Please add a new fruit on
+      <a class="fruits-index-link" href="/fruits/new">New Fruit Page</a>
+    </p>
+    <% } %>
     <ul>
-      <% allFruits.map(fruit =>{ %>
-      <li><%= fruit.name %></li>
+      <% allFruits.map(fruit => { %>
+      <li>
+        <a class="fruit-cards" href="/fruits/<%= fruit._id %>"> <%= fruit.name %> </a>
+      </li>
       <% }) %>
     </ul>
   </body>

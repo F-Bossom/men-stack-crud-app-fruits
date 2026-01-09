@@ -1,48 +1,34 @@
 const express = require("express");
 const app = express();
 const Fruit = require("./models/fruit");
+const morgan = require("morgan");
+const methodOverride = require("method-override");
+const fruitController = require("./controllers/fruitController");
 
-//Middlewares
-require("./db/connection"); // load in the JS and connect to MongoDB
+// Middlewares
+require("./db/connection"); // Load in this JS and connect to MongoDB
 // Allow my app to use form data - adds formdata to req.body
 app.use(express.urlencoded({ extended: true }));
-
-// Routes
-//Landing Page
+app.use(morgan("dev")); // logs request  details to the console
+app.use(express.static("public")); // Serve static files from public folder
+/* 
+  MethodOverride checks the url for a query param of method and will process the reques
+  as the methods we provide
+  /fruits/12345?_method=PUT
+*/
+app.use(methodOverride("_method")); // Overrides Request so we can use Put or Delete
+// routes
+// Landing Page
 app.get("/", (req, res) => {
   res.render("index.ejs");
 });
 
-// I.N.D.U.C.E.S
+// attach all the routes from the controller to our app
+app.use(fruitController);
 
-// Index - GET /fruits - render all the fruits
-app.get("/fruits", async (req, res) => {
-  const allFruits = await Fruit.find();
-  res.render("fruits/index.ejs", { allFruits });
+app.get("/*splat", (req, res) => {
+  res.render("404.ejs", { url: req.url });
 });
-
-// New - GET /fruits/new - render the new fruits form
-app.get("/fruits/new", (req, res) => {
-  res.render("fruits/new.ejs");
-});
-
-// Delete - DELETE /fruits/:fruitId - delete a specific fruit from the DB(database)
-
-// Update - PUT /fruits/:fruitId (req.body) - update a specific fruit using req.body
-
-// Create - POST /fruits - use req.body to create a new fruit
-app.post("/fruits", async (req, res) => {
-  console.log(req.body);
-  req.body.isReadyToEat = req.body.isReadyToEat === "on" ? true : false;
-
-  await Fruit.create(req.body);
-
-  res.redirect("/fruits/");
-});
-
-// Edit - GET /fruits/fruitId/edit - render a pre-populated form to edit the fruit
-
-// Show - Get /fruits/:fruitId - render a specific fruit from the DB(database)
 
 app.listen(3000, () => {
   console.log("Where are the fruits?: 3000");

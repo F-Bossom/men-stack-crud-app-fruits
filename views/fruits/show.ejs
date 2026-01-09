@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('../partials/head.ejs', { title: "Show " + fruit.name }) %>
+  <body>
+    <%- include('../partials/navbar.ejs') %>
+    <div class="fruit-details">
+      <h1 style="color:<%= fruit.color %>"><%= fruit.name %></h1>
+      <% if( fruit.isReadyToEat) { %>
+      <p>This fruit is ready to eat!</p>
+      <% } else { %>
+      <p>This fruit is not ready to eat!</p>
+      <% } %>
+    </div>
+    <div class="fruit-actions">
+      <form
+        class="delete-form"
+        action="/fruits/<%= fruit._id %>?_method=DELETE"
+        method="POST"
+      >
+        <button class="delete-button" type="submit">Delete this Fruit</button>
+      </form>
+      <div class="delete-form">
+        <a href="/fruits"
+          ><button class="delete-button">Go back to All Fruits</button></a
+        >
+      </div>
+      <div class="delete-form">
+        <a href="/fruits/<%= fruit._id %>/edit">
+          <button class="delete-button">Edit the <%= fruit.name %></button>
+        </a>
+      </div>
+    </div>
+  </body>
+</html>
